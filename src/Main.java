@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,8 +31,8 @@ public class Main {
 
         List<Order> orders = new ArrayList<>();
         orders.add(new Order(11L, "In corso", LocalDate.now(), LocalDate.of(2024, 10, 2), products.subList(0, 3), customer1));
-        orders.add(new Order(22L, "Pagato", LocalDate.now(), LocalDate.of(2021, 3, 20), products.subList(3, 6), customer3));
-        orders.add(new Order(33L, "In corso", LocalDate.now(), LocalDate.of(2023, 12, 2), products.subList(0, 2), customer2));
+        orders.add(new Order(22L, "Pagato", LocalDate.now(), LocalDate.of(2021, 3, 20), products.subList(3, 6), customer2));
+        orders.add(new Order(33L, "In corso", LocalDate.now(), LocalDate.of(2023, 12, 2), products.subList(0, 2), customer3));
 
 
         for (Product product : products) {
@@ -43,29 +44,28 @@ public class Main {
         products.stream()
                 .filter(product -> product.getCategory().equals("Books"))
                 .filter(product -> product.getPrice() > 100)
-                .forEach(System.out::println);
+                .forEach(name -> System.out.println(name));
 
 
         System.out.println("-------Esercizio 2-----");
         orders.stream()
                 .filter(order -> order.getProducts().stream()
                         .anyMatch(product -> product.getCategory().equals("Baby")))
-                .forEach(System.out::println);
+                .forEach(name -> System.out.println(name));
 
 
         System.out.println("-------Esercizio 3-----");
         double sconto = 0.10;
 
-        products.stream()
+        List<Product> discountedProducts = products.stream()
                 .filter(product -> product.getCategory().equals("Boy"))
-                .forEach(product -> {
+                .map(product -> {
                     double prezzoScontato = product.getPrice() - (product.getPrice() * sconto);
-
-                    System.out.println("Prodotto: " + product.getName() +
-                            ", Categoria: " + product.getCategory() +
-                            ", Prezzo originale: " + product.getPrice() +
-                            ", Prezzo scontato: " + prezzoScontato);
-                });
+                    product.setPrezzoScontato(prezzoScontato);
+                    System.out.println(product);
+                    return product;
+                })
+                .collect(Collectors.toList());
 
 
         System.out.println("-------Esercizio 4-----");
@@ -74,7 +74,7 @@ public class Main {
                 .filter(order -> order.getCustomer().getTier() == 2)
                 .filter(order -> order.getOrderDate().isAfter(LocalDate.of(2021, 1, 31))
                         && order.getOrderDate().isBefore(LocalDate.of(2021, 4, 2)))
-                .forEach(System.out::println);
+                .forEach(name -> System.out.println(name));
 
     }
 }
